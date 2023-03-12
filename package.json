@@ -1,8 +1,17 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "My backend project",
+  "author": "Vinicius Silva <viniciuspsilvas@gmail.com>",
+  "license": "ISC",
+  "private": true,
   "main": "index.js",
+  "workspaces": {
+    "packages": [
+      "apps/core",
+      "apps/*"
+    ]
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,8 +20,6 @@
     "url": "git+https://github.com/viniciuspsilvas/mycareer-backend-new.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/viniciuspsilvas/mycareer-backend-new/issues"
   },
