@@ -13,7 +13,11 @@
     ]
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "core": "yarn workspace core",
+    "graphql": "yarn workspace graphql",
+    "nuke": "yarn workspaces run nuke; rimraf node_modules; rm yarn.lock *error.log; yarn && yarn core build",
+    "test": "yarn workspaces run test",
+    "up": "yarn upgrade-interactive --latest"
   },
   "repository": {
     "type": "git",
