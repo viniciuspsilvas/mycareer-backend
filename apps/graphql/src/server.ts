@@ -10,14 +10,10 @@ import path from 'path'
 import 'reflect-metadata'
 import { buildSchema } from 'type-graphql'
 import { HealthCheckResolver } from './graphql/HealthCheckResolver'
-import { UserResolver } from './graphql/UserResolver'
+import { UserResolver } from './users'
 
 // >>> Add new RESOLVERS here! <<<
 const resolvers = [UserResolver]
-
-export interface Context {
-  prisma: PrismaClient
-}
 
 interface ContextValue {
   prisma?: PrismaClient
