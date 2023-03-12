@@ -2,33 +2,34 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "My backend project",
+  "repository": "git@github.com:viniciuspsilvas/mycareer-backend.git",
   "author": "Vinicius Silva <viniciuspsilvas@gmail.com>",
   "license": "ISC",
   "private": true,
-  "main": "index.js",
   "workspaces": {
     "packages": [
       "apps/core",
       "apps/*"
+    ],
+    "--nohoist": [
+      "**/.prisma/**",
+      "**/.prisma",
+      "**/@prisma/**",
+      "**/@prisma",
+      "**/prisma/**",
+      "**/prisma"
     ]
   },
   "scripts": {
     "core": "yarn workspace core",
     "graphql": "yarn workspace graphql",
-    "nuke": "yarn workspaces run nuke; rimraf node_modules; rm yarn.lock *error.log; yarn && yarn core build",
+    "nuke": "yarn workspaces run nuke; rimraf node_modules; rm yarn.lock *error.log; yarn && yarn core build && yarn db:generate",
     "test": "yarn workspaces run test",
-    "up": "yarn upgrade-interactive --latest"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/viniciuspsilvas/mycareer-backend-new.git"
-  },
-  "keywords": [],
-  "bugs": {
-    "url": "https://github.com/viniciuspsilvas/mycareer-backend-new/issues"
-  },
-  "homepage": "https://github.com/viniciuspsilvas/mycareer-backend-new#readme",
-  "devDependencies": {
-    "typescript": "4.9.5"
+    "up": "yarn upgrade-interactive --latest",
+    "db:init": "yarn core build && yarn db:generate && yarn db:migrate && yarn db:seed",
+    "db:generate": "yarn graphql db:generate",
+    "db:migrate": "yarn graphql db:migrate",
+    "db:seed": "yarn graphql db:seed",
+    "db:reset": "yarn graphql db:reset"
   }
 }

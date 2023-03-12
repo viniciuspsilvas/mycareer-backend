@@ -1,6 +1,7 @@
 import { ApolloServer } from '@apollo/server'
 import { expressMiddleware } from '@apollo/server/express4'
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
+import { PrismaClient } from '@prisma/client'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import express, { Request, Response } from 'express'
@@ -8,11 +9,15 @@ import http from 'http'
 import path from 'path'
 import 'reflect-metadata'
 import { buildSchema } from 'type-graphql'
+import { resolvers } from '../prisma/generated/type-graphql'
 import { HealthCheckResolver } from './graphql/custom-resolver'
 
-export interface Context {}
+export interface Context {
+  prisma: PrismaClient
+}
 
 interface ContextValue {
+  prisma?: PrismaClient
   token?: string
 }
 
@@ -23,8 +28,10 @@ export const createApolloServer = async (options = { port: 3000 }) => {
 
   app.get('/hc', (req: Request, res: Response) => res.json({ status: 'ok' }))
 
+  const prisma = new PrismaClient()
+
   const schema = await buildSchema({
-    resolvers: [HealthCheckResolver],
+    resolvers: [...resolvers, HealthCheckResolver],
     emitSchemaFile: path.resolve(__dirname, './graphql/generated/schema.graphql'),
     validate: false
   })
@@ -43,7 +50,7 @@ export const createApolloServer = async (options = { port: 3000 }) => {
   app.use(
     '/',
     cors({
-      origin: ['http://localhost:8080'],
+      origin: [/\.viniciusdeveloper\.com$/, 'https://studio.apollographql.com', 'http://localhost:8080'],
       credentials: true
     }),
     // 50mb is the limit that `startStandaloneServer` uses, but you may configure this to suit your needs
@@ -51,7 +58,7 @@ export const createApolloServer = async (options = { port: 3000 }) => {
     // expressMiddleware accepts the same arguments:
     // an Apollo Server instance and optional configuration options
     expressMiddleware(server, {
-      context: async ({ req }) => ({ token: req.headers.token })
+      context: async ({ req }) => ({ token: req.headers.token, prisma })
     })
   )
 
