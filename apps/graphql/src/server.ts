@@ -9,8 +9,11 @@ import http from 'http'
 import path from 'path'
 import 'reflect-metadata'
 import { buildSchema } from 'type-graphql'
-import { resolvers } from '../prisma/generated/type-graphql'
-import { HealthCheckResolver } from './graphql/custom-resolver'
+import { HealthCheckResolver } from './graphql/HealthCheckResolver'
+import { UserResolver } from './graphql/UserResolver'
+
+// >>> Add new RESOLVERS here! <<<
+const resolvers = [UserResolver]
 
 export interface Context {
   prisma: PrismaClient
@@ -25,13 +28,11 @@ interface ContextValue {
 export const createApolloServer = async (options = { port: 3000 }) => {
   const app = express()
   const httpServer = http.createServer(app)
-
   app.get('/hc', (req: Request, res: Response) => res.json({ status: 'ok' }))
 
   const prisma = new PrismaClient()
-
   const schema = await buildSchema({
-    resolvers: [...resolvers, HealthCheckResolver],
+    resolvers: [HealthCheckResolver, ...resolvers],
     emitSchemaFile: path.resolve(__dirname, './graphql/generated/schema.graphql'),
     validate: false
   })

@@ -1,6 +1,6 @@
-import { head } from 'lodash'
-import { Context } from 'src/server'
-import { Ctx, Query, Resolver } from 'type-graphql'
+import { hash } from 'bcryptjs'
+import { CreateOneUserArgs, User } from 'prisma/generated/type-graphql'
+import { Args, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 
 @Resolver((of) => String)
 export class HealthCheckResolver {

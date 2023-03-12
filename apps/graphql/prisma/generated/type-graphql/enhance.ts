@@ -173,7 +173,7 @@ function applyTypeClassEnhanceConfig<
 }
 
 const modelsInfo = {
-  User: ["id", "createdAt", "updatedAt", "firstname", "lastname", "email", "password"]
+  User: ["id", "createdAt", "updatedAt", "firstname", "lastname", "email"]
 };
 
 type ModelNames = keyof typeof models;
