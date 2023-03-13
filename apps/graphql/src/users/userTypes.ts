@@ -20,11 +20,11 @@ export class User {
   @Field(() => Int, { nullable: true, defaultValue: 0 })
   tokenVersion?: number
 
-  // @Field(() => Date, { nullable: false })
-  // createdAt!: Date
+  @Field(() => Date)
+  createdAt!: Date
 
-  // @Field(() => Date, { nullable: false })
-  // updatedAt!: Date
+  @Field(() => Date, { nullable: true })
+  updatedAt?: Date | null
 }
 
 @InputType()
