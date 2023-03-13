@@ -10,13 +10,14 @@ import { verify } from 'jsonwebtoken'
 import path from 'path'
 import 'reflect-metadata'
 import { buildSchema } from 'type-graphql'
+import { AwardResolver } from './awards'
 import { HealthCheckResolver } from './graphql/HealthCheckResolver'
 import { UserResolver } from './users'
 import { createAccessToken, createRefreshToken } from './users/auth'
 import { sendRefreshToken } from './users/sendRefreshToken'
 
 // >>> Add new RESOLVERS here! <<<
-const resolvers = [UserResolver]
+const resolvers = [UserResolver, AwardResolver]
 
 interface ContextValue {
   prisma?: PrismaClient

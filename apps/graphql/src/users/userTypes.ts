@@ -17,8 +17,14 @@ export class User {
   @Field()
   email!: string
 
-  @Field((type) => Int, { nullable: true, defaultValue: 0 })
+  @Field(() => Int, { nullable: true, defaultValue: 0 })
   tokenVersion?: number
+
+  // @Field(() => Date, { nullable: false })
+  // createdAt!: Date
+
+  // @Field(() => Date, { nullable: false })
+  // updatedAt!: Date
 }
 
 @InputType()

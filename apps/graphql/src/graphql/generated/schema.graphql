@@ -3,6 +3,25 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type Award {
+  description: String
+  grantedAt: DateTime!
+  id: ID!
+  title: String!
+}
+
+input AwardInput {
+  description: String
+  grantedAt: DateTime!
+  id: ID
+  title: String!
+}
+
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
 type LoginResponse {
   accessToken: String!
   user: User!
@@ -13,11 +32,15 @@ type Mutation {
   logout: Boolean!
   revokeRefreshTokensForUser(id: ID!): Boolean!
 
+  """Create or update a single award record."""
+  upsertAward(data: AwardInput!): Award!
+
   """Create or update a single user record."""
   upsertUser(data: UserInput!): User!
 }
 
 type Query {
+  awards: [Award!]!
   healthLocal: String
   me: User
   users: [User!]!
