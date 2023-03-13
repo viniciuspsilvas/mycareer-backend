@@ -1,4 +1,4 @@
-import { Field, ID, InputType, ObjectType } from 'type-graphql'
+import { Field, ID, InputType, Int, ObjectType } from 'type-graphql'
 
 @ObjectType()
 export class User {
@@ -14,8 +14,11 @@ export class User {
   @Field({ nullable: true })
   mobile?: string
 
-  @Field({ nullable: true })
-  email?: string
+  @Field()
+  email!: string
+
+  @Field((type) => Int, { nullable: true, defaultValue: 0 })
+  tokenVersion?: number
 }
 
 @InputType()
@@ -38,4 +41,12 @@ export class UserInput {
   toJSON() {
     return this
   }
+}
+
+@ObjectType()
+export class LoginResponse {
+  @Field()
+  accessToken!: string
+  @Field(() => User)
+  user!: User
 }

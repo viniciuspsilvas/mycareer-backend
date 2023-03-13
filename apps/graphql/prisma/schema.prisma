@@ -12,13 +12,14 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @default(now())
-  firstname String
-  lastname  String
-  email     String
-
+  id           String    @id @default(uuid())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime? @default(now())
+  firstname    String
+  lastname     String
+  email        String    @unique
   /// @TypeGraphQL.omit(output: true)
-  password String
+  password     String
+  /// @TypeGraphQL.omit(output: true)
+  tokenVersion Int
 }

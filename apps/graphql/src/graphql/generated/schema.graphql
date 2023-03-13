@@ -3,21 +3,30 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type LoginResponse {
+  accessToken: String!
+  user: User!
+}
+
 type Mutation {
+  login(email: String!, password: String!): LoginResponse!
+
   """Create or update a single user record."""
   upsertUser(data: UserInput!): User!
 }
 
 type Query {
   healthLocal: String
+  users: [User!]!
 }
 
 type User {
-  email: String
+  email: String!
   firstname: String!
   id: ID!
   lastname: String!
   mobile: String
+  tokenVersion: Int
 }
 
 input UserInput {
