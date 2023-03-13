@@ -25,16 +25,44 @@ interface ContextValue {
 
 // This function will create a new server Apollo Server instance -
 export const createApolloServer = async (options = { port: 3000 }) => {
+  const prisma = new PrismaClient()
+
   const app = express()
   const httpServer = http.createServer(app)
-  app.get('/hc', (req: Request, res: Response) => res.json({ status: 'ok' }))
 
-  const prisma = new PrismaClient()
   const schema = await buildSchema({
     resolvers: [HealthCheckResolver, ...resolvers],
     emitSchemaFile: path.resolve(__dirname, './graphql/generated/schema.graphql'),
     validate: false
   })
+
+  // Same ApolloServer initialization as before, plus the drain plugin
+  // for our httpServer.
+  const server = new ApolloServer<ContextValue>({
+    schema,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
+  })
+  // Ensure we wait for our server to start
+  const serverInfo = await server.start()
+
+  // Set up our Express middleware to handle CORS, body parsing,
+  // and our expressMiddleware function.
+  app.use(
+    '/',
+    cors({
+      origin: [/\.viniciusdeveloper\.com$/, 'https://studio.apollographql.com', 'http://localhost:8080'],
+      credentials: true
+    }),
+    // 50mb is the limit that `startStandaloneServer` uses, but you may configure this to suit your needs
+    bodyParser.json({ limit: '50mb' }),
+    // expressMiddleware accepts the same arguments:
+    // an Apollo Server instance and optional configuration options
+    expressMiddleware(server, {
+      context: async ({ req, res }) => ({ req, res, token: req.headers.token, prisma })
+    })
+  )
+
+  app.get('/hc', (req: Request, res: Response) => res.json({ status: 'ok' }))
 
   app.post('/refresh_token', async (req, res) => {
     const token = req.cookies.jid
@@ -66,32 +94,6 @@ export const createApolloServer = async (options = { port: 3000 }) => {
 
     return res.send({ ok: true, accessToken: createAccessToken(user) })
   })
-
-  // Same ApolloServer initialization as before, plus the drain plugin
-  // for our httpServer.
-  const server = new ApolloServer<ContextValue>({
-    schema,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
-  })
-  // Ensure we wait for our server to start
-  const serverInfo = await server.start()
-
-  // Set up our Express middleware to handle CORS, body parsing,
-  // and our expressMiddleware function.
-  app.use(
-    '/',
-    cors({
-      origin: [/\.viniciusdeveloper\.com$/, 'https://studio.apollographql.com', 'http://localhost:8080'],
-      credentials: true
-    }),
-    // 50mb is the limit that `startStandaloneServer` uses, but you may configure this to suit your needs
-    bodyParser.json({ limit: '50mb' }),
-    // expressMiddleware accepts the same arguments:
-    // an Apollo Server instance and optional configuration options
-    expressMiddleware(server, {
-      context: async ({ req, res }) => ({ res, token: req.headers.token, prisma })
-    })
-  )
 
   // Modified server startup
   await new Promise<void>((resolve) => httpServer.listen({ port: options.port }, resolve))

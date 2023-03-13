@@ -10,6 +10,8 @@ type LoginResponse {
 
 type Mutation {
   login(email: String!, password: String!): LoginResponse!
+  logout: Boolean!
+  revokeRefreshTokensForUser(id: ID!): Boolean!
 
   """Create or update a single user record."""
   upsertUser(data: UserInput!): User!
@@ -17,6 +19,7 @@ type Mutation {
 
 type Query {
   healthLocal: String
+  me: User
   users: [User!]!
 }
 

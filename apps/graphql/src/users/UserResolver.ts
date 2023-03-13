@@ -1,5 +1,6 @@
 import { compare, hash } from 'bcryptjs'
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql'
+import { verify } from 'jsonwebtoken'
+import { Arg, Ctx, ID, Int, Mutation, Query, Resolver } from 'type-graphql'
 import { Context } from '../_common'
 import { createRefreshToken, createAccessToken } from './auth'
 import { sendRefreshToken } from './sendRefreshToken'
@@ -61,5 +62,47 @@ export class UserResolver {
       accessToken: createAccessToken(user),
       user
     }
+  }
+
+  @Query(() => User, { nullable: true })
+  me(@Ctx() { prisma, req }: Context) {
+    const authorization = req.headers['authorization']
+
+    if (!authorization) {
+      return null
+    }
+
+    try {
+      const token = authorization.split(' ')[1]
+      const payload: any = verify(token, process.env.ACCESS_TOKEN_SECRET!)
+
+      return prisma.user.findUnique({ where: { id: payload.userId } })
+    } catch (err) {
+      console.log(err)
+      return null
+    }
+  }
+
+  @Mutation(() => Boolean)
+  async logout(@Ctx() { res }: Context) {
+    sendRefreshToken(res, '')
+
+    return true
+  }
+
+  @Mutation(() => Boolean)
+  async revokeRefreshTokensForUser(@Ctx() { prisma }: Context, @Arg('id', () => ID) id: string) {
+    await prisma.user.update({
+      where: {
+        id
+      },
+      data: {
+        tokenVersion: {
+          increment: 1
+        }
+      }
+    })
+
+    return true
   }
 }
