@@ -16,14 +16,10 @@ import { HealthCheckResolver } from './graphql/HealthCheckResolver'
 import { UserResolver } from './users'
 import { createAccessToken, createRefreshToken } from './users/auth'
 import { sendRefreshToken } from './users/sendRefreshToken'
+import { Context } from './_common'
 
 // >>> Add new RESOLVERS here! <<<
 const resolvers = [UserResolver, AwardResolver]
-
-interface ContextValue {
-  prisma?: PrismaClient
-  token?: string
-}
 
 // This function will create a new server Apollo Server instance -
 export const createApolloServer = async (options = { port: 3000 }) => {
@@ -81,7 +77,7 @@ export const createApolloServer = async (options = { port: 3000 }) => {
 
   // Same ApolloServer initialization as before, plus the drain plugin
   // for our httpServer.
-  const server = new ApolloServer<ContextValue>({
+  const server = new ApolloServer<Context>({
     schema,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
   })
