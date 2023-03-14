@@ -1,4 +1,5 @@
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql'
+import { isAuth } from '../middleware/isAuth'
+import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql'
 import { Context } from '../_common'
 import { Award, AwardInput } from './awardTypes'
 
@@ -26,6 +27,7 @@ export class AwardResolver {
   }
 
   @Query(() => [Award])
+  @UseMiddleware(isAuth)
   awards(@Ctx() { prisma }: Context) {
     return prisma.award.findMany()
   }
