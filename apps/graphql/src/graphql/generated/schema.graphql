@@ -4,10 +4,12 @@
 # -----------------------------------------------
 
 type Award {
+  createdAt: DateTime!
   description: String
   grantedAt: DateTime!
   id: ID!
   title: String!
+  updatedAt: DateTime!
 }
 
 input AwardInput {
@@ -47,12 +49,14 @@ type Query {
 }
 
 type User {
+  createdAt: DateTime!
   email: String!
   firstname: String!
   id: ID!
   lastname: String!
   mobile: String
   tokenVersion: Int
+  updatedAt: DateTime
 }
 
 input UserInput {
