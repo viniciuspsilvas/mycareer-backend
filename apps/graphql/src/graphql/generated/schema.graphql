@@ -24,13 +24,8 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 """
 scalar DateTime
 
-type LoginResponse {
-  accessToken: String!
-  user: User!
-}
-
 type Mutation {
-  login(email: String!, password: String!): LoginResponse!
+  login(email: String!, password: String!): User!
   logout: Boolean!
   revokeRefreshTokensForUser(id: ID!): Boolean!
 
@@ -49,6 +44,7 @@ type Query {
 }
 
 type User {
+  accessToken: String
   createdAt: DateTime!
   email: String!
   firstname: String!

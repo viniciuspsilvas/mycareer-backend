@@ -38,12 +38,12 @@ export class UserResolver {
     return prisma.user.findMany()
   }
 
-  @Mutation(() => LoginResponse)
+  @Mutation(() => User)
   async login(
     @Arg('email') email: string,
     @Arg('password') password: string,
     @Ctx() { res, prisma }: Context
-  ): Promise<LoginResponse> {
+  ): Promise<User> {
     const user = await prisma.user.findUnique({ where: { email } })
 
     if (!user) {
@@ -60,7 +60,7 @@ export class UserResolver {
 
     return {
       accessToken: createAccessToken(user),
-      user
+      ...user
     }
   }
 

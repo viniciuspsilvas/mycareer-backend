@@ -20,6 +20,9 @@ export class User {
   @Field(() => Int, { nullable: true, defaultValue: 0 })
   tokenVersion?: number
 
+  @Field({ nullable: true })
+  accessToken?: string
+
   @Field(() => Date)
   createdAt!: Date
 
