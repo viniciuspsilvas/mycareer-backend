@@ -25,6 +25,7 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 scalar DateTime
 
 type Mutation {
+  deleteAwardById(id: String!): Award!
   login(email: String!, password: String!): User!
   logout: Boolean!
   revokeRefreshTokensForUser(id: ID!): Boolean!
@@ -37,6 +38,7 @@ type Mutation {
 }
 
 type Query {
+  awardById(id: String!): Award!
   awards: [Award!]!
   healthLocal: String
   me: User

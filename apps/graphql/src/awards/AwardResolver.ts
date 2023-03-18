@@ -31,4 +31,16 @@ export class AwardResolver {
   awards(@Ctx() { prisma }: Context) {
     return prisma.award.findMany()
   }
+
+  @Query(() => Award)
+  @UseMiddleware(isAuth)
+  awardById(@Ctx() { prisma }: Context, @Arg('id') id: string) {
+    return prisma.award.findUnique({ where: { id } })
+  }
+
+  @Mutation(() => Award)
+  @UseMiddleware(isAuth)
+  deleteAwardById(@Ctx() { prisma }: Context, @Arg('id') id: string) {
+    return prisma.award.delete({ where: { id } })
+  }
 }
