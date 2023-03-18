@@ -1,10 +1,11 @@
 import { compare, hash } from 'bcryptjs'
 import { verify } from 'jsonwebtoken'
-import { Arg, Ctx, ID, Int, Mutation, Query, Resolver } from 'type-graphql'
+import { isAuth } from '../middleware/isAuth'
+import { Arg, Ctx, ID, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql'
 import { Context } from '../_common'
-import { createRefreshToken, createAccessToken } from './auth'
+import { createAccessToken, createRefreshToken } from './auth'
 import { sendRefreshToken } from './sendRefreshToken'
-import { LoginResponse, User, UserInput } from './userTypes'
+import { User, UserInput } from './userTypes'
 
 @Resolver(() => User)
 export class UserResolver {
@@ -65,6 +66,7 @@ export class UserResolver {
   }
 
   @Query(() => User, { nullable: true })
+  @UseMiddleware(isAuth)
   me(@Ctx() { prisma, req }: Context) {
     const authorization = req.headers['authorization']
 
