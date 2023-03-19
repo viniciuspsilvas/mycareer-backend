@@ -5,9 +5,22 @@ import { Award, AwardInput } from './awardTypes'
 
 @Resolver(() => Award)
 export class AwardResolver {
+  @Query(() => [Award])
+  @UseMiddleware(isAuth)
+  awards(@Ctx() { prisma }: Context) {
+    return prisma.award.findMany()
+  }
+
+  @Query(() => Award)
+  @UseMiddleware(isAuth)
+  awardById(@Ctx() { prisma }: Context, @Arg('id') id: string) {
+    return prisma.award.findUnique({ where: { id } })
+  }
+
   @Mutation(() => Award, {
     description: 'Create or update a single award record.'
   })
+  @UseMiddleware(isAuth)
   async upsertAward(@Arg('data', () => AwardInput) data: AwardInput, @Ctx() { prisma }: Context) {
     const { id, title, description, grantedAt } = data
 
@@ -24,18 +37,6 @@ export class AwardResolver {
         grantedAt
       }
     })
-  }
-
-  @Query(() => [Award])
-  @UseMiddleware(isAuth)
-  awards(@Ctx() { prisma }: Context) {
-    return prisma.award.findMany()
-  }
-
-  @Query(() => Award)
-  @UseMiddleware(isAuth)
-  awardById(@Ctx() { prisma }: Context, @Arg('id') id: string) {
-    return prisma.award.findUnique({ where: { id } })
   }
 
   @Mutation(() => Award)
