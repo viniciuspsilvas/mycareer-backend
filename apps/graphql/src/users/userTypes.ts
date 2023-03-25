@@ -23,6 +23,9 @@ export class User {
   @Field({ nullable: true })
   accessToken?: string
 
+  @Field({ nullable: true })
+  refreshToken?: string
+
   @Field(() => Date)
   createdAt!: Date
 

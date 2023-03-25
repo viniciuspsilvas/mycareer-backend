@@ -40,6 +40,37 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
+  async refreshToken(@Arg('refreshToken') refreshToken: string, @Ctx() { res, prisma }: Context): Promise<User> {
+    if (!refreshToken) {
+      throw new Error('refreshToken null')
+    }
+
+    let payload: any = null
+    try {
+      payload = verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!)
+    } catch (err) {
+      console.log(err)
+      throw new Error('refreshToken invalid')
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: payload.userId } })
+
+    if (!user) {
+      throw new Error('could not find user')
+    }
+
+    if (user.tokenVersion !== payload.tokenVersion) {
+      throw new Error('tokenVersion invalid')
+    }
+
+    return {
+      refreshToken: createRefreshToken(user),
+      accessToken: createAccessToken(user),
+      ...user
+    }
+  }
+
+  @Mutation(() => User)
   async login(
     @Arg('email') email: string,
     @Arg('password') password: string,
@@ -57,9 +88,12 @@ export class UserResolver {
       throw new Error('bad password')
     }
 
-    sendRefreshToken(res, createRefreshToken(user))
+    // Not using cookie for refreshToken anymore,
+    // instead the new token is being returned.
+    // sendRefreshToken(res, createRefreshToken(user))
 
     return {
+      refreshToken: createRefreshToken(user),
       accessToken: createAccessToken(user),
       ...user
     }

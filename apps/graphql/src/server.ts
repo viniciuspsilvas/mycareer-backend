@@ -34,12 +34,16 @@ export const createApolloServer = async (options = { port: 3000 }) => {
   )
 
   app.use(cookieParser())
+  // Body-parser middleware
+  app.use(bodyParser.urlencoded({ extended: true }))
+  app.use(bodyParser.json())
+
   const httpServer = http.createServer(app)
 
   app.get('/hc', (req: Request, res: Response) => res.json({ status: 'ok' }))
 
   app.post('/refresh_token', async (req, res) => {
-    const token = req.cookies.jid
+    const token = req.body.refreshToken
     if (!token) {
       return res.send({ ok: false, accessToken: '' })
     }
@@ -64,9 +68,11 @@ export const createApolloServer = async (options = { port: 3000 }) => {
       return res.send({ ok: false, accessToken: '' })
     }
 
-    sendRefreshToken(res, createRefreshToken(user))
+    // Not using cookie for refreshToken anymore,
+    // instead the new token is being returned.
+    // sendRefreshToken(res, createRefreshToken(user))
 
-    return res.send({ ok: true, accessToken: createAccessToken(user) })
+    return res.send({ ok: true, accessToken: createAccessToken(user), refreshToken: createRefreshToken(user) })
   })
 
   const schema = await buildSchema({

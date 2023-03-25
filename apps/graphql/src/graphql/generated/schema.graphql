@@ -28,6 +28,7 @@ type Mutation {
   deleteAwardById(id: String!): Award!
   login(email: String!, password: String!): User!
   logout: Boolean!
+  refreshToken(refreshToken: String!): User!
   revokeRefreshTokensForUser(id: ID!): Boolean!
 
   """Create or update a single award record."""
@@ -53,6 +54,7 @@ type User {
   id: ID!
   lastname: String!
   mobile: String
+  refreshToken: String
   tokenVersion: Int
   updatedAt: DateTime
 }
