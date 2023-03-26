@@ -55,7 +55,7 @@ type User {
   lastname: String!
   mobile: String
   refreshToken: String
-  role: String!
+  role: UserRole!
   tokenVersion: Int
   updatedAt: DateTime
 }
@@ -67,4 +67,10 @@ input UserInput {
   lastname: String!
   password: String!
   role: String!
+}
+
+"""User role"""
+enum UserRole {
+  ADMIN
+  USER
 }

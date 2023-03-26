@@ -1,6 +1,11 @@
 import { UserRole } from '@prisma/client'
 import { Field, ID, InputType, Int, ObjectType, registerEnumType } from 'type-graphql'
 
+registerEnumType(UserRole, {
+  name: 'UserRole',
+  description: 'User role'
+})
+
 @ObjectType()
 export class User {
   @Field(() => ID)
@@ -18,7 +23,7 @@ export class User {
   @Field()
   email!: string
 
-  @Field()
+  @Field(() => UserRole)
   role!: UserRole
 
   @Field(() => Int, { nullable: true, defaultValue: 0 })
