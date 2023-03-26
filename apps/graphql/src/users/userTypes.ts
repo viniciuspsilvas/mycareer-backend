@@ -1,4 +1,5 @@
-import { Field, ID, InputType, Int, ObjectType } from 'type-graphql'
+import { UserRole } from '@prisma/client'
+import { Field, ID, InputType, Int, ObjectType, registerEnumType } from 'type-graphql'
 
 @ObjectType()
 export class User {
@@ -18,7 +19,7 @@ export class User {
   email!: string
 
   @Field()
-  role!: string
+  role!: UserRole
 
   @Field(() => Int, { nullable: true, defaultValue: 0 })
   tokenVersion?: number
@@ -54,7 +55,7 @@ export class UserInput {
   lastname!: string
 
   @Field()
-  role!: string
+  role!: UserRole
 
   toJSON() {
     return this
