@@ -17,6 +17,7 @@ model User {
   updatedAt    DateTime? @default(now())
   firstname    String
   lastname     String
+  role         String
   email        String    @unique
   /// @TypeGraphQL.omit(output: true)
   password     String

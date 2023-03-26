@@ -13,7 +13,7 @@ export class UserResolver {
     description: 'Create or update a single user record.'
   })
   async upsertUser(@Arg('data', () => UserInput) data: UserInput, @Ctx() { prisma }: Context) {
-    const { id, firstname, lastname, email, password } = data
+    const { id, firstname, lastname, email, password, role } = data
     const hashedPassword = await hash(password, 12)
 
     return await prisma.user.upsert({
@@ -22,12 +22,14 @@ export class UserResolver {
         firstname,
         lastname,
         password: hashedPassword,
+        role,
         email
       },
       create: {
         firstname,
         lastname,
         password: hashedPassword,
+        role,
         email,
         tokenVersion: 0
       }

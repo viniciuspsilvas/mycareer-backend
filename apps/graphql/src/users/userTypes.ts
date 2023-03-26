@@ -17,6 +17,9 @@ export class User {
   @Field()
   email!: string
 
+  @Field()
+  role!: string
+
   @Field(() => Int, { nullable: true, defaultValue: 0 })
   tokenVersion?: number
 
@@ -49,6 +52,9 @@ export class UserInput {
 
   @Field()
   lastname!: string
+
+  @Field()
+  role!: string
 
   toJSON() {
     return this

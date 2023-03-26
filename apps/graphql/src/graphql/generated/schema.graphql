@@ -55,6 +55,7 @@ type User {
   lastname: String!
   mobile: String
   refreshToken: String
+  role: String!
   tokenVersion: Int
   updatedAt: DateTime
 }
@@ -65,4 +66,5 @@ input UserInput {
   id: ID
   lastname: String!
   password: String!
+  role: String!
 }
